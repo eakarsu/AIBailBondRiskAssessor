@@ -1,0 +1,111 @@
+{
+  "project": "AIBailBondRiskAssessor",
+  "marker": "// === Batch 01 Gaps & Frontend Mounts ===",
+  "features": [
+    {
+      "slug": "agentic-bail-review-workflow-with-multi-agent-risk",
+      "component": "AgenticBailReviewWorkflowWithMultiAgentRiskPage",
+      "label": "Agentic bail review workflow with multi-agent risk, compliance, and judge-recommendation coordination",
+      "endpoint": "/api/cf-agentic-bail-review-workflow-with-multi-agent-risk",
+      "kind": "cfs"
+    },
+    {
+      "slug": "historical-case-rag-over-precedents-and-comparable",
+      "component": "HistoricalCaseRagOverPrecedentsAndComparablePage",
+      "label": "Historical case RAG over precedents and comparable bail decisions",
+      "endpoint": "/api/cf-historical-case-rag-over-precedents-and-comparable",
+      "kind": "cfs"
+    },
+    {
+      "slug": "real-time-risk-event-streaming-new-arrests-travel-",
+      "component": "RealTimeRiskEventStreamingNewArrestsTravelPage",
+      "label": "Real-time risk-event streaming (new arrests, travel, address changes) triggering re-assessment",
+      "endpoint": "/api/cf-real-time-risk-event-streaming-new-arrests-travel-",
+      "kind": "cfs"
+    },
+    {
+      "slug": "integrations-with-pacer-ncic-and-probation-systems",
+      "component": "IntegrationsWithPacerNcicAndProbationSystemsPage",
+      "label": "Integrations with PACER, NCIC, and probation systems (WebLOMS)",
+      "endpoint": "/api/cf-integrations-with-pacer-ncic-and-probation-systems",
+      "kind": "cfs"
+    },
+    {
+      "slug": "no-ai-driven-bond-pricing-despite-financial-analys",
+      "component": "NoAiDrivenBondPricingDespiteFinancialAnalysPage",
+      "label": "No AI-driven bond pricing despite financial-analysis data",
+      "endpoint": "/api/gap-no-ai-driven-bond-pricing-despite-financial-analys",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-nlp-intake-of-police-reports-arrest-records",
+      "component": "NoNlpIntakeOfPoliceReportsArrestRecordsPage",
+      "label": "No NLP intake of police reports / arrest records",
+      "endpoint": "/api/gap-no-nlp-intake-of-police-reports-arrest-records",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-vision-document-ocr-for-booking-sheets",
+      "component": "NoVisionDocumentOcrForBookingSheetsPage",
+      "label": "No vision/document OCR for booking sheets",
+      "endpoint": "/api/gap-no-vision-document-ocr-for-booking-sheets",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-anomaly-detection-on-check-in-curfew-violations",
+      "component": "NoAnomalyDetectionOnCheckInCurfewViolationsPage",
+      "label": "No anomaly detection on check-in/curfew violations",
+      "endpoint": "/api/gap-no-anomaly-detection-on-check-in-curfew-violations",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-predictive-court-date-no-show-forecasting",
+      "component": "NoPredictiveCourtDateNoShowForecastingPage",
+      "label": "No predictive court-date no-show forecasting",
+      "endpoint": "/api/gap-no-predictive-court-date-no-show-forecasting",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-gps-ankle-monitor-device-integration",
+      "component": "NoGpsAnkleMonitorDeviceIntegrationPage",
+      "label": "No GPS/ankle-monitor device integration",
+      "endpoint": "/api/gap-no-gps-ankle-monitor-device-integration",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-payment-processing-for-premiums-and-collateral",
+      "component": "NoPaymentProcessingForPremiumsAndCollateralPage",
+      "label": "No payment processing for premiums and collateral",
+      "endpoint": "/api/gap-no-payment-processing-for-premiums-and-collateral",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-defendant-facing-mobile-check-in-app",
+      "component": "NoDefendantFacingMobileCheckInAppPage",
+      "label": "No defendant-facing mobile check-in app",
+      "endpoint": "/api/gap-no-defendant-facing-mobile-check-in-app",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-sms-voice-reminder-delivery-notifications-modul",
+      "component": "NoSmsVoiceReminderDeliveryNotificationsModulPage",
+      "label": "No SMS/voice reminder delivery (notifications module appears storage-only)",
+      "endpoint": "/api/gap-no-sms-voice-reminder-delivery-notifications-modul",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-e-signature-workflow-for-bond-contracts",
+      "component": "NoESignatureWorkflowForBondContractsPage",
+      "label": "No e-signature workflow for bond contracts",
+      "endpoint": "/api/gap-no-e-signature-workflow-for-bond-contracts",
+      "kind": "gap"
+    },
+    {
+      "slug": "no-direct-pacer-ncic-court-record-sync",
+      "component": "NoDirectPacerNcicCourtRecordSyncPage",
+      "label": "No direct PACER/NCIC court-record sync",
+      "endpoint": "/api/gap-no-direct-pacer-ncic-court-record-sync",
+      "kind": "gap"
+    }
+  ]
+}

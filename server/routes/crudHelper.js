@@ -126,7 +126,17 @@ function createCrudRouter(tableName, columns) {
   // POST create
   router.post('/', auth, async (req, res) => {
     try {
-      const cols = columns.filter(c => req.body[c] !== undefined);
+      // Reject any keys not in the allowed columns list
+      const unknownKeys = Object.keys(req.body).filter(k => !columns.includes(k));
+      if (unknownKeys.length > 0) {
+        return res.status(400).json({ error: `Unknown fields: ${unknownKeys.join(', ')}` });
+      }
+
+      const cols = columns.filter(c => req.body[c] !== undefined && req.body[c] !== null && req.body[c] !== '');
+      if (cols.length === 0) {
+        return res.status(400).json({ error: 'Request body must contain at least one valid field' });
+      }
+
       const vals = cols.map(c => req.body[c]);
       const placeholders = cols.map((_, i) => `$${i + 1}`).join(', ');
       const result = await pool.query(
@@ -135,6 +145,12 @@ function createCrudRouter(tableName, columns) {
       );
       res.status(201).json(result.rows[0]);
     } catch (err) {
+      if (err.code === '23502') {
+        return res.status(400).json({ error: `Missing required field: ${err.column || 'unknown'}` });
+      }
+      if (err.code === '23503') {
+        return res.status(400).json({ error: 'Referenced record does not exist (foreign key violation)' });
+      }
       res.status(500).json({ error: err.message });
     }
   });
@@ -142,7 +158,16 @@ function createCrudRouter(tableName, columns) {
   // PUT update
   router.put('/:id', auth, async (req, res) => {
     try {
+      const unknownKeys = Object.keys(req.body).filter(k => !columns.includes(k));
+      if (unknownKeys.length > 0) {
+        return res.status(400).json({ error: `Unknown fields: ${unknownKeys.join(', ')}` });
+      }
+
       const cols = columns.filter(c => req.body[c] !== undefined);
+      if (cols.length === 0) {
+        return res.status(400).json({ error: 'No valid fields to update' });
+      }
+
       const vals = cols.map(c => req.body[c]);
       const setClause = cols.map((c, i) => `${c} = $${i + 1}`).join(', ');
       vals.push(req.params.id);
@@ -153,6 +178,12 @@ function createCrudRouter(tableName, columns) {
       if (result.rows.length === 0) return res.status(404).json({ error: 'Not found' });
       res.json(result.rows[0]);
     } catch (err) {
+      if (err.code === '23502') {
+        return res.status(400).json({ error: `Missing required field: ${err.column || 'unknown'}` });
+      }
+      if (err.code === '23503') {
+        return res.status(400).json({ error: 'Referenced record does not exist (foreign key violation)' });
+      }
       res.status(500).json({ error: err.message });
     }
   });

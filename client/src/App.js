@@ -11,6 +11,11 @@ import ReportsPage from './pages/ReportsPage';
 import UserManagement from './pages/UserManagement';
 import AuditLogPage from './pages/AuditLogPage';
 import SettingsPage from './pages/SettingsPage';
+import AIInsights from './pages/AIInsights';
+import WebhooksPage from './pages/WebhooksPage';
+import IntegrationsPage from './pages/IntegrationsPage';
+import HistoricalRagPage from './pages/HistoricalRagPage';
+import MultiAgentReviewPage from './pages/MultiAgentReviewPage';
 import Sidebar from './components/Sidebar';
 import './App.css';
 
@@ -44,29 +49,34 @@ function App() {
   }
 
   const features = [
-    { key: 'defendants', label: 'Defendants', icon: '\uD83D\uDC64', color: '#6366f1' },
-    { key: 'bail-bonds', label: 'Bail Bonds', icon: '\u2696\uFE0F', color: '#8b5cf6' },
-    { key: 'risk-assessments', label: 'Risk Assessments', icon: '\uD83D\uDCCA', color: '#ec4899' },
-    { key: 'court-cases', label: 'Court Cases', icon: '\uD83C\uDFDB\uFE0F', color: '#f59e0b' },
-    { key: 'compliance', label: 'Compliance', icon: '\u2705', color: '#10b981' },
-    { key: 'flight-risk', label: 'Flight Risk', icon: '\u2708\uFE0F', color: '#ef4444' },
-    { key: 'criminal-history', label: 'Criminal History', icon: '\uD83D\uDCCB', color: '#f97316' },
-    { key: 'employment', label: 'Employment', icon: '\uD83D\uDCBC', color: '#06b6d4' },
-    { key: 'community-ties', label: 'Community Ties', icon: '\uD83E\uDD1D', color: '#84cc16' },
-    { key: 'financial', label: 'Financial Analysis', icon: '\uD83D\uDCB0', color: '#eab308' },
-    { key: 'substance-abuse', label: 'Substance Abuse', icon: '\uD83E\uDDEA', color: '#d946ef' },
-    { key: 'mental-health', label: 'Mental Health', icon: '\uD83E\uDDE0', color: '#14b8a6' },
-    { key: 'recidivism', label: 'Recidivism', icon: '\uD83D\uDD04', color: '#f43f5e' },
-    { key: 'surety', label: 'Surety Management', icon: '\uD83D\uDEE1\uFE0F', color: '#0ea5e9' },
-    { key: 'notifications', label: 'Notifications', icon: '\uD83D\uDD14', color: '#a855f7' },
+    { key: 'defendants', label: 'Defendants', icon: '👤', color: '#6366f1' },
+    { key: 'bail-bonds', label: 'Bail Bonds', icon: '⚖️', color: '#8b5cf6' },
+    { key: 'risk-assessments', label: 'Risk Assessments', icon: '📊', color: '#ec4899' },
+    { key: 'court-cases', label: 'Court Cases', icon: '🏛️', color: '#f59e0b' },
+    { key: 'compliance', label: 'Compliance', icon: '✅', color: '#10b981' },
+    { key: 'flight-risk', label: 'Flight Risk', icon: '✈️', color: '#ef4444' },
+    { key: 'criminal-history', label: 'Criminal History', icon: '📋', color: '#f97316' },
+    { key: 'employment', label: 'Employment', icon: '💼', color: '#06b6d4' },
+    { key: 'community-ties', label: 'Community Ties', icon: '🤝', color: '#84cc16' },
+    { key: 'financial', label: 'Financial Analysis', icon: '💰', color: '#eab308' },
+    { key: 'substance-abuse', label: 'Substance Abuse', icon: '🧪', color: '#d946ef' },
+    { key: 'mental-health', label: 'Mental Health', icon: '🧠', color: '#14b8a6' },
+    { key: 'recidivism', label: 'Recidivism', icon: '🔄', color: '#f43f5e' },
+    { key: 'surety', label: 'Surety Management', icon: '🛡️', color: '#0ea5e9' },
+    { key: 'notifications', label: 'Notifications', icon: '🔔', color: '#a855f7' },
   ];
 
   const systemLinks = [
-    { key: 'calendar', label: 'Calendar', icon: '\uD83D\uDCC5', color: '#3b82f6' },
-    { key: 'reports', label: 'Reports & Analytics', icon: '\uD83D\uDCC8', color: '#f59e0b' },
-    { key: 'users', label: 'User Management', icon: '\uD83D\uDC65', color: '#6366f1' },
-    { key: 'audit-log', label: 'Audit Log', icon: '\uD83D\uDCC4', color: '#64748b' },
-    { key: 'settings', label: 'Settings', icon: '\u2699\uFE0F', color: '#94a3b8' },
+    { key: 'ai-insights', label: 'AI Insights', icon: '🤖', color: '#a855f7' },
+    { key: 'calendar', label: 'Calendar', icon: '📅', color: '#3b82f6' },
+    { key: 'reports', label: 'Reports & Analytics', icon: '📈', color: '#f59e0b' },
+    { key: 'users', label: 'User Management', icon: '👥', color: '#6366f1' },
+    { key: 'audit-log', label: 'Audit Log', icon: '📄', color: '#64748b' },
+    { key: 'webhooks', label: 'Webhooks', icon: '🔔', color: '#0ea5e9' },
+    { key: 'integrations', label: 'Integrations', icon: '🔌', color: '#22c55e' },
+    { key: 'historical-rag', label: 'Historical RAG', icon: '📚', color: '#a855f7' },
+    { key: 'multi-agent', label: 'Agentic Review', icon: '🤖', color: '#f97316' },
+    { key: 'settings', label: 'Settings', icon: '⚙️', color: '#94a3b8' },
   ];
 
   return (
@@ -87,10 +97,15 @@ function App() {
               <Route key={f.key} path={`/${f.key}/*`} element={<FeaturePage feature={f} />} />
             ))}
             <Route path="/defendant-profile/:id" element={<DefendantProfile />} />
+            <Route path="/ai-insights" element={<AIInsights />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/users" element={<UserManagement />} />
             <Route path="/audit-log" element={<AuditLogPage />} />
+            <Route path="/webhooks" element={<WebhooksPage />} />
+            <Route path="/integrations" element={<IntegrationsPage />} />
+            <Route path="/historical-rag" element={<HistoricalRagPage />} />
+            <Route path="/multi-agent" element={<MultiAgentReviewPage />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

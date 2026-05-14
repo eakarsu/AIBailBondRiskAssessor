@@ -111,6 +111,8 @@ async function setup() {
       case_number VARCHAR(100),
       court_name VARCHAR(255),
       judge VARCHAR(255),
+      judge_name VARCHAR(255),
+      courtroom VARCHAR(100),
       charge TEXT,
       charge_severity VARCHAR(50),
       next_hearing_date DATE,
@@ -118,6 +120,7 @@ async function setup() {
       status VARCHAR(50) DEFAULT 'Pending',
       prosecutor VARCHAR(255),
       defense_attorney VARCHAR(255),
+      reminder_sent BOOLEAN DEFAULT false,
       notes TEXT,
       created_at TIMESTAMP DEFAULT NOW(),
       updated_at TIMESTAMP DEFAULT NOW()
@@ -125,6 +128,7 @@ async function setup() {
 
     CREATE TABLE IF NOT EXISTS compliance_reports (
       id SERIAL PRIMARY KEY,
+      defendant_id INTEGER REFERENCES defendants(id) ON DELETE CASCADE,
       report_type VARCHAR(100),
       title VARCHAR(255),
       description TEXT,
@@ -331,6 +335,35 @@ async function setup() {
       created_at TIMESTAMP DEFAULT NOW()
     );
 
+    CREATE TABLE IF NOT EXISTS bail_bond_status_history (
+      id SERIAL PRIMARY KEY,
+      bail_bond_id INTEGER REFERENCES bail_bonds(id) ON DELETE CASCADE,
+      old_status VARCHAR(50),
+      new_status VARCHAR(50) NOT NULL,
+      changed_by INTEGER REFERENCES users(id),
+      notes TEXT,
+      changed_at TIMESTAMP DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS ai_results (
+      id SERIAL PRIMARY KEY,
+      feature VARCHAR(100) NOT NULL,
+      entity_type VARCHAR(100),
+      entity_id INTEGER,
+      user_email VARCHAR(255),
+      request_payload JSONB,
+      response JSONB,
+      created_at TIMESTAMP DEFAULT NOW()
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_ai_results_feature ON ai_results(feature);
+    CREATE INDEX IF NOT EXISTS idx_ai_results_entity ON ai_results(entity_type, entity_id);
+    CREATE INDEX IF NOT EXISTS idx_ai_results_created ON ai_results(created_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_defendants_risk_level ON defendants(risk_level);
+    CREATE INDEX IF NOT EXISTS idx_bail_bonds_defendant ON bail_bonds(defendant_id);
+    CREATE INDEX IF NOT EXISTS idx_bail_bonds_status ON bail_bonds(status);
+    CREATE INDEX IF NOT EXISTS idx_court_cases_hearing_date ON court_cases(next_hearing_date);
+
     CREATE TABLE IF NOT EXISTS notifications (
       id SERIAL PRIMARY KEY,
       title VARCHAR(255),
@@ -350,7 +383,26 @@ async function setup() {
     );
   `);
 
-  console.log('All tables created successfully');
+  // Migration: add missing columns to existing tables (idempotent)
+  const migrations = [
+    `ALTER TABLE court_cases ADD COLUMN IF NOT EXISTS judge_name VARCHAR(255)`,
+    `ALTER TABLE court_cases ADD COLUMN IF NOT EXISTS courtroom VARCHAR(100)`,
+    `ALTER TABLE court_cases ADD COLUMN IF NOT EXISTS reminder_sent BOOLEAN DEFAULT false`,
+    `ALTER TABLE compliance_reports ADD COLUMN IF NOT EXISTS defendant_id INTEGER REFERENCES defendants(id) ON DELETE CASCADE`,
+    `ALTER TABLE bail_bonds ADD COLUMN IF NOT EXISTS collateral_value DECIMAL(12,2)`,
+  ];
+
+  for (const sql of migrations) {
+    try {
+      await pool.query(sql);
+    } catch (err) {
+      if (err.code !== '42701') { // 42701 = column already exists
+        console.warn('Migration warning:', err.message);
+      }
+    }
+  }
+
+  console.log('All tables created and migrations applied successfully');
   await pool.end();
 }
 

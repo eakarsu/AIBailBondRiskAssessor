@@ -4,10 +4,15 @@ import api from '../services/api';
 
 export default function Dashboard({ features }) {
   const [stats, setStats] = useState(null);
+  const [recentAlerts, setRecentAlerts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     api.get('/dashboard/stats').then(r => setStats(r.data)).catch(() => {});
+    // Load recent CRITICAL notifications
+    api.get('/notifications', { params: { filter_priority: 'CRITICAL', limit: 5 } })
+      .then(r => setRecentAlerts(r.data?.data || []))
+      .catch(() => {});
   }, []);
 
   const descriptions = {
@@ -71,6 +76,22 @@ export default function Dashboard({ features }) {
           </div>
         </div>
       )}
+
+      <div style={{ display: 'flex', gap: 12, marginBottom: 24, flexWrap: 'wrap' }}>
+        <button className="btn-ai" style={{ width: 'auto' }} onClick={() => navigate('/ai-insights')}>
+          &#129302; AI Insights
+        </button>
+        <button className="btn-primary" style={{ width: 'auto', background: '#ef4444' }} onClick={() => navigate('/ai-insights')}>
+          &#128202; Portfolio Risk Summary
+        </button>
+        {recentAlerts.length > 0 && (
+          <div style={{ background: 'rgba(239,68,68,0.12)', border: '1px solid #ef444488', borderRadius: 8, padding: '8px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{ color: '#ef4444', fontWeight: 700 }}>&#9888;</span>
+            <span style={{ color: '#ef4444', fontSize: 13 }}>{recentAlerts.length} CRITICAL AI alert{recentAlerts.length > 1 ? 's' : ''} require attention</span>
+            <button className="btn-secondary" style={{ padding: '2px 10px', fontSize: 12 }} onClick={() => navigate('/notifications')}>View</button>
+          </div>
+        )}
+      </div>
 
       <h2 style={{ fontSize: 18, fontWeight: 700, color: '#94a3b8', marginBottom: 16, textTransform: 'uppercase', letterSpacing: 1 }}>
         Modules
