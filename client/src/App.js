@@ -16,8 +16,14 @@ import WebhooksPage from './pages/WebhooksPage';
 import IntegrationsPage from './pages/IntegrationsPage';
 import HistoricalRagPage from './pages/HistoricalRagPage';
 import MultiAgentReviewPage from './pages/MultiAgentReviewPage';
+import CollateralLienMonitor from './pages/CollateralLienMonitor';
 import Sidebar from './components/Sidebar';
 import './App.css';
+
+import CodexCustomVizFeature from './pages/CodexCustomVizFeature';
+import CodexOperationsFeature from './pages/CodexOperationsFeature';
+
+import TimelineView from './pages/TimelineView';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -76,6 +82,7 @@ function App() {
     { key: 'integrations', label: 'Integrations', icon: '🔌', color: '#22c55e' },
     { key: 'historical-rag', label: 'Historical RAG', icon: '📚', color: '#a855f7' },
     { key: 'multi-agent', label: 'Agentic Review', icon: '🤖', color: '#f97316' },
+    { key: 'collateral-lien-monitor', label: 'Collateral Liens', icon: '🏦', color: '#22c55e' },
     { key: 'settings', label: 'Settings', icon: '⚙️', color: '#94a3b8' },
   ];
 
@@ -92,6 +99,10 @@ function App() {
         />
         <main className={`main-content ${sidebarOpen ? '' : 'expanded'}`}>
           <Routes>
+        <Route path="/insights/timeline" element={<TimelineView />} />
+        <Route path="/codex/custom-viz" element={<CodexCustomVizFeature />} />
+        <Route path="/codex/operations" element={<CodexOperationsFeature />} />
+
             <Route path="/" element={<Dashboard features={features} />} />
             {features.map(f => (
               <Route key={f.key} path={`/${f.key}/*`} element={<FeaturePage feature={f} />} />
@@ -106,6 +117,7 @@ function App() {
             <Route path="/integrations" element={<IntegrationsPage />} />
             <Route path="/historical-rag" element={<HistoricalRagPage />} />
             <Route path="/multi-agent" element={<MultiAgentReviewPage />} />
+            <Route path="/collateral-lien-monitor" element={<CollateralLienMonitor />} />
             <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

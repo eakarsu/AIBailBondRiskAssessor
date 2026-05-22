@@ -79,6 +79,7 @@ app.use('/api/precedent-rag', require('./routes/precedentRagSearch')); // apply 
 app.use('/api/risk-event-stream', require('./routes/riskEventStream')); // apply pass 6 — audit custom suggestion
 
 app.use('/api/court-integrations', require('./routes/courtSystemIntegrations')); // apply pass 6 — audit custom suggestion
+app.use('/api/collateral-lien-monitor', require('./routes/collateralLienMonitor'));
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   // Start court date reminder email scheduler (runs every hour)
