@@ -8,7 +8,7 @@ const { generalRateLimiter } = require('./middleware/rateLimiter');
 const auditLog = require('./middleware/auditLog');
 
 // Guard: fail fast if JWT_SECRET is not configured
-if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your_jwt_secret_here') {
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32 || process.env.JWT_SECRET === 'your_jwt_secret_here') {
   console.error('[FATAL] JWT_SECRET is not set or is using the default placeholder. Set a strong secret in .env');
   process.exit(1);
 }
@@ -56,8 +56,7 @@ app.use('/api/mental-health', auditLog('mental_health'), require('./routes/menta
 app.use('/api/recidivism', auditLog('recidivism'), require('./routes/recidivism'));
 app.use('/api/surety', auditLog('surety'), require('./routes/surety'));
 app.use('/api/notifications', auditLog('notification'), require('./routes/notifications'));
-app.use('/api/ai', require('./routes/ai'));
-app.use('/api/ai', require('./routes/aiNew'));
+// Model-generated bail recommendations are quarantined from the decision surface.
 app.use('/api/dashboard', require('./routes/dashboard'));
 app.use('/api/audit-log', require('./routes/auditLog'));
 app.use('/api/users', auditLog('user'), require('./routes/users'));
@@ -68,11 +67,11 @@ app.use('/api/search', require('./routes/search'));
 app.use('/api/webhooks', require('./routes/webhooks'));
 app.use('/api/integrations', require('./routes/integrations')); // apply pass 5: PACER/NCIC/WebLOMS gated stubs
 app.use('/api/historical-rag', require('./routes/historicalRag')); // apply pass 5: in-memory historical-case RAG
-app.use('/api/multi-agent', require('./routes/multiAgent')); // apply pass 5: 3-agent bail review pipeline
+app.use('/api/governed-cases', require('./routes/governedCases'));
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 
-app.use('/api/agentic-bail-review', require('./routes/agenticBailReview')); // apply pass 6 — audit custom suggestion
+// Agentic bail-review prototype deliberately unmounted.
 
 app.use('/api/precedent-rag', require('./routes/precedentRagSearch')); // apply pass 6 — audit custom suggestion
 
@@ -83,19 +82,8 @@ app.use('/api/collateral-lien-monitor', require('./routes/collateralLienMonitor'
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   // Start court date reminder email scheduler (runs every hour)
-  startCourtDateReminderScheduler();
+  if (process.env.ENABLE_REMINDER_SCHEDULER === 'true') startCourtDateReminderScheduler();
 });
 
 
-// === Batch 01 Gaps & Frontend Mounts ===
-app.use('/api/gap-no-ai-driven-bond-pricing-despite-financial-analys', require('./routes/gap_no_ai_driven_bond_pricing_despite_financial_analys'));
-app.use('/api/gap-no-nlp-intake-of-police-reports-arrest-records', require('./routes/gap_no_nlp_intake_of_police_reports_arrest_records'));
-app.use('/api/gap-no-vision-document-ocr-for-booking-sheets', require('./routes/gap_no_vision_document_ocr_for_booking_sheets'));
-app.use('/api/gap-no-anomaly-detection-on-check-in-curfew-violations', require('./routes/gap_no_anomaly_detection_on_check_in_curfew_violations'));
-app.use('/api/gap-no-predictive-court-date-no-show-forecasting', require('./routes/gap_no_predictive_court_date_no_show_forecasting'));
-app.use('/api/gap-no-gps-ankle-monitor-device-integration', require('./routes/gap_no_gps_ankle_monitor_device_integration'));
-app.use('/api/gap-no-payment-processing-for-premiums-and-collateral', require('./routes/gap_no_payment_processing_for_premiums_and_collateral'));
-app.use('/api/gap-no-defendant-facing-mobile-check-in-app', require('./routes/gap_no_defendant_facing_mobile_check_in_app'));
-app.use('/api/gap-no-sms-voice-reminder-delivery-notifications-modul', require('./routes/gap_no_sms_voice_reminder_delivery_notifications_modul'));
-app.use('/api/gap-no-e-signature-workflow-for-bond-contracts', require('./routes/gap_no_e_signature_workflow_for_bond_contracts'));
-app.use('/api/gap-no-direct-pacer-ncic-court-record-sync', require('./routes/gap_no_direct_pacer_ncic_court_record_sync'));
+// Generated gap endpoints remain unmounted audit artifacts.

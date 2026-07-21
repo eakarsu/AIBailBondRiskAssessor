@@ -21,11 +21,6 @@ export default function Login({ onLogin }) {
     setLoading(false);
   };
 
-  const fillDemo = () => {
-    setEmail('admin@bailbond.com');
-    setPassword('admin123');
-  };
-
   return (
     <div className="login-container">
       <div className="login-bg-effect login-bg-1" />
@@ -69,9 +64,6 @@ export default function Login({ onLogin }) {
           </button>
         </form>
 
-        <button className="demo-btn" onClick={fillDemo}>
-          Fill Demo Credentials
-        </button>
       </div>
     </div>
   );
