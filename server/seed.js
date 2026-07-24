@@ -11,6 +11,12 @@ const dbConfig = {
 if (process.env.DB_PASSWORD) dbConfig.password = process.env.DB_PASSWORD;
 const pool = new Pool(dbConfig);
 
+function requireDemoPassword() {
+  const password = process.env.DEMO_PASSWORD || process.env.SEED_DEMO_PASSWORD || process.env.DEMO_SEED_PASSWORD || '';
+  if (password.length < 12 || password.length > 1024) throw new Error('DEMO_PASSWORD must contain 12-1024 characters');
+  return password;
+}
+
 async function seed() {
   // Clear existing data
   await pool.query(`
@@ -21,7 +27,7 @@ async function seed() {
   `);
 
   // Seed Users
-  const hash = await bcrypt.hash('admin123', 10);
+  const hash = await bcrypt.hash(requireDemoPassword(), 10);
   await pool.query(`INSERT INTO users (email, password_hash, name, role) VALUES
     ('admin@bailbond.com', $1, 'John Administrator', 'admin'),
     ('assessor@bailbond.com', $1, 'Sarah Assessor', 'assessor'),
