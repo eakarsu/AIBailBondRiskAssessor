@@ -41,6 +41,7 @@ app.use(generalRateLimiter);
 
 // Routes — audit logging applied to all data-mutating endpoints
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/runtime-ai', require('./routes/runtimeAi'));
 app.use('/api/defendants', auditLog('defendant'), require('./routes/defendants'));
 app.use('/api/bail-bonds', auditLog('bail_bond'), require('./routes/bailBonds'));
 app.use('/api/risk-assessments', auditLog('risk_assessment'), require('./routes/riskAssessments'));
