@@ -1,7 +1,8 @@
+import NativeAIControls from "../components/NativeAIControls.jsx";
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import api from '../services/api';
-import AIResultDisplay from '../components/AIResultDisplay';
+import AIReport from '../components/AIReport';
 
 const FEATURES = [
   { key: 'fta-forecast', label: 'FTA Forecast', icon: '\uD83D\uDCC5', description: 'Predict failure-to-appear risk for next hearing.', needs: ['defendant_id'] },
@@ -28,6 +29,7 @@ export default function AIInsights() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [history, setHistory] = useState([]);
+  const [selectedHistory, setSelectedHistory] = useState(null);
   const [historyPage, setHistoryPage] = useState(1);
   const [historyTotal, setHistoryTotal] = useState(0);
 
@@ -50,7 +52,11 @@ export default function AIInsights() {
     }
   };
 
-  useEffect(() => { loadHistory(1); /* eslint-disable-next-line */ }, [feature.key]);
+  useEffect(() => {
+    setSelectedHistory(null);
+    loadHistory(1);
+    /* eslint-disable-next-line */
+  }, [feature.key]);
 
   const run = async () => {
     setLoading(true);
@@ -85,7 +91,7 @@ export default function AIInsights() {
   const totalHistoryPages = Math.max(1, Math.ceil(historyTotal / 10));
 
   return (
-    <div className="page-container">
+    <NativeAIControls busy={loading} context="BailBondRiskAssessor"><div className="page-container">
       <div className="page-header">
         <div className="page-title-section">
           <span className="page-icon">{'\uD83E\uDD16'}</span>
@@ -120,7 +126,7 @@ export default function AIInsights() {
           {feature.needs.includes('defendant_id') && (
             <div className="detail-field">
               <div className="detail-label">Defendant</div>
-              <select className="form-select" value={defendantId} onChange={e => setDefendantId(e.target.value)}>
+              <select data-ai-field={"defendantId"} className="form-select" value={defendantId} onChange={e => setDefendantId(e.target.value)}>
                 <option value="">Select...</option>
                 {defendants.map(d => (
                   <option key={d.id} value={d.id}>{d.first_name} {d.last_name} (#{d.id})</option>
@@ -131,7 +137,7 @@ export default function AIInsights() {
           {feature.needs.includes('bond_id') && (
             <div className="detail-field">
               <div className="detail-label">Bond</div>
-              <select className="form-select" value={bondId} onChange={e => setBondId(e.target.value)}>
+              <select data-ai-field={"bondId"} className="form-select" value={bondId} onChange={e => setBondId(e.target.value)}>
                 <option value="">Select...</option>
                 {bonds.map(b => (
                   <option key={b.id} value={b.id}>#{b.id} — ${Number(b.bond_amount || 0).toLocaleString()} {b.bond_type ? `(${b.bond_type})` : ''}</option>
@@ -142,14 +148,14 @@ export default function AIInsights() {
           {feature.key === 'risk-trends' && (
             <div className="detail-field">
               <div className="detail-label">Window (days)</div>
-              <input className="form-input" type="number" min={7} max={180}
+              <input data-ai-field={"windowDays"} className="form-input" type="number" min={7} max={180}
                 value={windowDays} onChange={e => setWindowDays(e.target.value)} />
             </div>
           )}
           {feature.key === 'court-hearing-prep' && (
             <div className="detail-field">
               <div className="detail-label">Hearing Type</div>
-              <input className="form-input" value={hearingType} onChange={e => setHearingType(e.target.value)} />
+              <input data-ai-field={"hearingType"} className="form-input" value={hearingType} onChange={e => setHearingType(e.target.value)} />
             </div>
           )}
         </div>
@@ -163,21 +169,7 @@ export default function AIInsights() {
       {result && (
         <div className="profile-section">
           <h3 className="profile-section-title">Result</h3>
-          <AIResultDisplay result={
-        result.forecast ||
-        result.monitoring_plan ||
-        result.forfeiture_assessment ||
-        result.trend ||
-        result.validation ||
-        result.prep ||
-        result.assessment ||
-        result.benchmarking ||
-        result.prediction ||
-        result.pricing ||
-        result.summary ||
-        result.warrant_assessment ||
-        result
-      } />
+          <AIReport response={result} title={feature.label} />
         </div>
       )}
 
@@ -199,8 +191,15 @@ export default function AIInsights() {
                     <td>{new Date(h.created_at).toLocaleString()}</td>
                     <td>{h.entity_type || '\u2014'} #{h.entity_id || ''}</td>
                     <td>{h.user_email || '\u2014'}</td>
-                    <td style={{ maxWidth: 320, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                      {(h.response && (h.response.detailed_analysis || h.response.rationale || h.response.comparison_summary)) || JSON.stringify(h.response).slice(0, 120)}
+                    <td style={{ maxWidth: 320 }}>
+                      <button
+                        type="button"
+                        className="btn-secondary btn-sm"
+                        onClick={() => setSelectedHistory(h)}
+                        style={{ width: '100%', textAlign: 'left', whiteSpace: 'normal' }}
+                      >
+                        {(h.response && (h.response.detailed_analysis || h.response.rationale || h.response.comparison_summary)) || 'Open saved result'} →
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -214,6 +213,13 @@ export default function AIInsights() {
           </div>
         )}
       </div>
-    </div>
+
+      {selectedHistory && (
+        <div className="profile-section">
+          <h3 className="profile-section-title">Saved {feature.label} result</h3>
+          <AIReport response={selectedHistory.response} title={`Saved ${feature.label}`} />
+        </div>
+      )}
+    </div></NativeAIControls>
   );
 }

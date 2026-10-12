@@ -1,3 +1,4 @@
+import FormattedAIReport from "../components/FormattedAIReport";
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../services/api';
@@ -47,13 +48,13 @@ export default function MultiAgentReviewPage() {
           {(result.steps || []).map((s, i) => (
             <div key={i} style={{ background: '#1f2937', padding: 16, borderRadius: 8, marginBottom: 12 }}>
               <h3 style={{ marginTop: 0 }}>Step {i + 1}: {s.agent}</h3>
-              <pre style={{ whiteSpace: 'pre-wrap', color: '#d1d5db', fontSize: 13 }}>{JSON.stringify(s.output, null, 2)}</pre>
+              <FormattedAIReport response={s.output} />
             </div>
           ))}
           {result.final_decision && (
             <div style={{ background: '#1e293b', border: '2px solid #10b981', padding: 16, borderRadius: 8 }}>
               <h3 style={{ marginTop: 0, color: '#10b981' }}>Final Decision</h3>
-              <pre style={{ whiteSpace: 'pre-wrap', color: '#d1d5db', fontSize: 13 }}>{JSON.stringify(result.final_decision, null, 2)}</pre>
+              <FormattedAIReport response={result.final_decision} />
             </div>
           )}
         </div>

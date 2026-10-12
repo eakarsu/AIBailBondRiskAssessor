@@ -1,0 +1,107 @@
+[
+  {
+    "name": "AgenticBailReviewWorkflowWithMultiAgentRiskPage",
+    "id": "cf-agentic-bail-review-workflow-with-multi-agent-risk",
+    "title": "Agentic bail review workflow with multi-agent risk, compliance, and judge-recommendation coordination",
+    "description": "Prepare a professional advisory report for agentic bail review workflow with multi-agent risk, compliance, and judge-recommendation coordination using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "HistoricalCaseRagOverPrecedentsAndComparablePage",
+    "id": "cf-historical-case-rag-over-precedents-and-comparable",
+    "title": "Historical case RAG over precedents and comparable bail decisions",
+    "description": "Prepare a professional advisory report for historical case rag over precedents and comparable bail decisions using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "IntegrationsWithPacerNcicAndProbationSystemsPage",
+    "id": "cf-integrations-with-pacer-ncic-and-probation-systems",
+    "title": "Integrations with PACER, NCIC, and probation systems (WebLOMS)",
+    "description": "Prepare a professional advisory report for integrations with pacer, ncic, and probation systems (webloms) using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoAiDrivenBondPricingDespiteFinancialAnalysPage",
+    "id": "gap-no-ai-driven-bond-pricing-despite-financial-analys",
+    "title": "No AI-driven bond pricing despite financial-analysis data",
+    "description": "Prepare a professional advisory report for no ai-driven bond pricing despite financial-analysis data using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoAnomalyDetectionOnCheckInCurfewViolationsPage",
+    "id": "gap-no-anomaly-detection-on-check-in-curfew-violations",
+    "title": "No anomaly detection on check-in/curfew violations",
+    "description": "Prepare a professional advisory report for no anomaly detection on check-in/curfew violations using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoDefendantFacingMobileCheckInAppPage",
+    "id": "gap-no-defendant-facing-mobile-check-in-app",
+    "title": "No defendant-facing mobile check-in app",
+    "description": "Prepare a professional advisory report for no defendant-facing mobile check-in app using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoDirectPacerNcicCourtRecordSyncPage",
+    "id": "gap-no-direct-pacer-ncic-court-record-sync",
+    "title": "No direct PACER/NCIC court-record sync",
+    "description": "Prepare a professional advisory report for no direct pacer/ncic court-record sync using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoESignatureWorkflowForBondContractsPage",
+    "id": "gap-no-e-signature-workflow-for-bond-contracts",
+    "title": "No e-signature workflow for bond contracts",
+    "description": "Prepare a professional advisory report for no e-signature workflow for bond contracts using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoGpsAnkleMonitorDeviceIntegrationPage",
+    "id": "gap-no-gps-ankle-monitor-device-integration",
+    "title": "No GPS/ankle-monitor device integration",
+    "description": "Prepare a professional advisory report for no gps/ankle-monitor device integration using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoNlpIntakeOfPoliceReportsArrestRecordsPage",
+    "id": "gap-no-nlp-intake-of-police-reports-arrest-records",
+    "title": "No NLP intake of police reports / arrest records",
+    "description": "Prepare a professional advisory report for no nlp intake of police reports / arrest records using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoPaymentProcessingForPremiumsAndCollateralPage",
+    "id": "gap-no-payment-processing-for-premiums-and-collateral",
+    "title": "No payment processing for premiums and collateral",
+    "description": "Prepare a professional advisory report for no payment processing for premiums and collateral using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoPredictiveCourtDateNoShowForecastingPage",
+    "id": "gap-no-predictive-court-date-no-show-forecasting",
+    "title": "No predictive court-date no-show forecasting",
+    "description": "Prepare a professional advisory report for no predictive court-date no-show forecasting using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoSmsVoiceReminderDeliveryNotificationsModulPage",
+    "id": "gap-no-sms-voice-reminder-delivery-notifications-modul",
+    "title": "No SMS/voice reminder delivery (notifications module appears storage-only)",
+    "description": "Prepare a professional advisory report for no sms/voice reminder delivery (notifications module appears storage-only) using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "NoVisionDocumentOcrForBookingSheetsPage",
+    "id": "gap-no-vision-document-ocr-for-booking-sheets",
+    "title": "No vision/document OCR for booking sheets",
+    "description": "Prepare a professional advisory report for no vision/document ocr for booking sheets using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  },
+  {
+    "name": "RealTimeRiskEventStreamingNewArrestsTravelPage",
+    "id": "cf-real-time-risk-event-streaming-new-arrests-travel-",
+    "title": "Real-time risk-event streaming (new arrests, travel, address changes) triggering re-assessment",
+    "description": "Prepare a professional advisory report for real-time risk-event streaming (new arrests, travel, address changes) triggering re-assessment using the brief and evidence you provide. Review the findings, assumptions, and action plan before applying changes.",
+    "samples": []
+  }
+]

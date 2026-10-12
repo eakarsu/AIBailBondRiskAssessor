@@ -80,6 +80,14 @@ app.use('/api/risk-event-stream', require('./routes/riskEventStream')); // apply
 
 app.use('/api/court-integrations', require('./routes/courtSystemIntegrations')); // apply pass 6 — audit custom suggestion
 app.use('/api/collateral-lien-monitor', require('./routes/collateralLienMonitor'));
+
+// Advisory AI reports only; native execution and approval routes stay unchanged.
+const aiWorkspaceSupport = require("./aiWorkspaceAdapters.cjs");
+const aiWorkspaceDatabase = require("./db.js");
+app.use('/api/report-workspace', require("./aiWorkspace.cjs").createAIWorkspaceRouter({
+  pool: aiWorkspaceDatabase, authenticateToken: require("./middleware/auth.js"),
+  aiRateLimiter: aiWorkspaceSupport.createWorkspaceLimiter(), features: require("./aiWorkspaceFeatures.json"),
+}));
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   // Start court date reminder email scheduler (runs every hour)

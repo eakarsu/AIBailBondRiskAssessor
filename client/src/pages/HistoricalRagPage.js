@@ -1,13 +1,34 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 import api from '../services/api';
+import AIReport from '../components/AIReport';
+import NativeAIControls from '../components/NativeAIControls';
+
+const RAG_PRESETS = [
+  { name: 'High-flight-risk review', query: 'What verified conditions and human-review checkpoints appear in comparable high-flight-risk cases? Cite the relevant case IDs and distinguish records from assumptions.', k: 5 },
+  { name: 'Community-ties comparison', query: 'Compare cases with strong community ties against similar cases with prior failures to appear. Summarize the recorded outcomes and cite every case ID used.', k: 8 },
+  { name: 'Hearing preparation', query: 'Which comparable cases contain documented court-appearance risks, and what non-decisional preparation steps are supported by those records? Cite case IDs and note missing evidence.', k: 10 },
+];
 
 export default function HistoricalRagPage() {
   const [query, setQuery] = useState('');
   const [k, setK] = useState(5);
   const [matches, setMatches] = useState([]);
   const [aiAnswer, setAiAnswer] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [selectedHistory, setSelectedHistory] = useState(null);
   const [busy, setBusy] = useState(false);
+
+  const loadHistory = useCallback(async () => {
+    try {
+      const response = await api.get('/historical-rag/history');
+      setHistory(Array.isArray(response.data?.data) ? response.data.data : []);
+    } catch (_) {
+      // History is supplementary; search remains available if storage is offline.
+    }
+  }, []);
+
+  useEffect(() => { loadHistory(); }, [loadHistory]);
 
   const search = async (withAI) => {
     if (!query.trim()) return toast.warn('Enter a question first');
@@ -18,7 +39,10 @@ export default function HistoricalRagPage() {
       const path = withAI ? '/historical-rag/ask' : '/historical-rag/search';
       const r = await api.post(path, { query, k });
       setMatches(r.data.matches || []);
-      if (withAI) setAiAnswer(r.data.ai);
+      if (withAI) {
+        setAiAnswer(r.data.ai);
+        await loadHistory();
+      }
     } catch (err) {
       const data = err.response?.data;
       if (err.response?.status === 503 && data?.missing) {
@@ -31,7 +55,21 @@ export default function HistoricalRagPage() {
   };
 
   return (
-    <div style={{ padding: 24, color: '#e5e7eb' }}>
+    <NativeAIControls
+      busy={busy}
+      context="historical bail-case research"
+      presets={RAG_PRESETS.map((preset) => ({
+        name: preset.name,
+        fill: () => {
+          setQuery(preset.query);
+          setK(preset.k);
+          setAiAnswer(null);
+          setSelectedHistory(null);
+          return { filled: 2, manual: [] };
+        },
+      }))}
+    >
+      <div style={{ padding: 24, color: '#e5e7eb' }}>
       <h2 style={{ marginTop: 0 }}>Historical Case RAG</h2>
       <p style={{ color: '#9ca3af' }}>
         Search over the existing risk_assessments archive using an in-memory hashed-bag-of-words embedding.
@@ -40,6 +78,8 @@ export default function HistoricalRagPage() {
 
       <div style={{ background: '#1f2937', padding: 16, borderRadius: 8, marginBottom: 16 }}>
         <textarea
+          data-ai-field="query"
+          data-ai-example="What verified conditions and review checkpoints appear in comparable high-flight-risk cases? Cite the relevant case IDs and distinguish records from assumptions."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="e.g. What conditions are typically imposed for high flight-risk DUI cases?"
@@ -48,18 +88,13 @@ export default function HistoricalRagPage() {
         />
         <div style={{ marginTop: 8, display: 'flex', gap: 8, alignItems: 'center' }}>
           <label style={{ fontSize: 12, color: '#9ca3af' }}>Top K:</label>
-          <input type="number" min="1" max="20" value={k} onChange={(e) => setK(parseInt(e.target.value, 10) || 5)} style={{ width: 60, padding: 6, background: '#111827', color: '#fff', border: '1px solid #374151', borderRadius: 6 }} />
+          <input data-ai-field="resultLimit" type="number" min="1" max="20" value={k} onChange={(e) => setK(parseInt(e.target.value, 10) || 5)} style={{ width: 60, padding: 6, background: '#111827', color: '#fff', border: '1px solid #374151', borderRadius: 6 }} />
           <button onClick={() => search(false)} disabled={busy} style={{ padding: '8px 16px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>{busy ? '…' : 'Search'}</button>
           <button onClick={() => search(true)} disabled={busy} style={{ padding: '8px 16px', background: '#a855f7', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer' }}>{busy ? '…' : 'Ask AI'}</button>
         </div>
       </div>
 
-      {aiAnswer && (
-        <div style={{ background: '#1e293b', padding: 16, borderRadius: 8, marginBottom: 16 }}>
-          <h3 style={{ marginTop: 0 }}>AI Answer</h3>
-          <pre style={{ whiteSpace: 'pre-wrap', color: '#d1d5db', fontSize: 13 }}>{JSON.stringify(aiAnswer, null, 2)}</pre>
-        </div>
-      )}
+      {aiAnswer && <AIReport response={aiAnswer} title="Historical Case AI Answer" />}
 
       <h3>Top Matches</h3>
       {matches.length === 0 ? (
@@ -88,6 +123,29 @@ export default function HistoricalRagPage() {
           </tbody>
         </table>
       )}
-    </div>
+
+      <section style={{ marginTop: 28 }}>
+        <h3>Saved AI answers</h3>
+        {history.length === 0 ? (
+          <p style={{ color: '#6b7280' }}>No saved AI answers yet.</p>
+        ) : (
+          <div style={{ display: 'grid', gap: 8 }}>
+            {history.map((item) => (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setSelectedHistory(item)}
+                style={{ padding: 12, textAlign: 'left', color: '#e5e7eb', background: '#1f2937', border: '1px solid #374151', borderRadius: 8, cursor: 'pointer' }}
+              >
+                <strong>{item.request_payload?.query || 'Historical case question'}</strong>
+                <span style={{ display: 'block', marginTop: 4, color: '#9ca3af', fontSize: 12 }}>{new Date(item.created_at).toLocaleString()} · Open saved answer →</span>
+              </button>
+            ))}
+          </div>
+        )}
+        {selectedHistory && <AIReport response={selectedHistory.response} title="Saved Historical Case AI Answer" />}
+      </section>
+      </div>
+    </NativeAIControls>
   );
 }

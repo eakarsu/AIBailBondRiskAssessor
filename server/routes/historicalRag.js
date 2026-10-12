@@ -94,6 +94,24 @@ async function loadCorpus() {
   });
 }
 
+router.get('/history', async (req, res) => {
+  try {
+    if (!req.user?.email) return res.json({ data: [] });
+    const result = await pool.query(
+      `SELECT id, request_payload, response, created_at
+       FROM ai_results
+       WHERE feature = $1 AND user_email = $2
+       ORDER BY created_at DESC, id DESC
+       LIMIT 50`,
+      ['historical_rag_ask', req.user.email],
+    );
+    return res.json({ data: result.rows });
+  } catch (err) {
+    if (err.code === '42P01') return res.json({ data: [] });
+    return res.status(500).json({ error: 'historical RAG history failed' });
+  }
+});
+
 router.post('/search', async (req, res) => {
   try {
     const { query, k } = req.body || {};

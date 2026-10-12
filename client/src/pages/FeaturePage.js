@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import api from '../services/api';
 import AIResultDisplay from '../components/AIResultDisplay';
+import NativeAIControls from '../components/NativeAIControls';
 
 const featureConfig = {
   'defendants': {
@@ -352,6 +353,7 @@ export default function FeaturePage({ feature }) {
   const searchTimer = useRef(null);
 
   const config = featureConfig[feature.key] || { columns: ['id'], fields: [] };
+  const defendantReferenceIds = [...new Set(items.map((item) => item.defendant_id).filter((id) => id !== null && id !== undefined && id !== ''))];
 
   // Debounce search
   useEffect(() => {
@@ -655,7 +657,7 @@ export default function FeaturePage({ feature }) {
 
   // Form View
   if (showForm) {
-    return (
+    const formView = (
       <div>
         <div className="page-header">
           <div className="page-title-section">
@@ -673,6 +675,7 @@ export default function FeaturePage({ feature }) {
                   <label className="form-label">{field.label}</label>
                   {field.type === 'textarea' ? (
                     <textarea
+                      data-ai-field={field.key}
                       className="form-textarea"
                       value={formData[field.key] || ''}
                       onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
@@ -680,6 +683,7 @@ export default function FeaturePage({ feature }) {
                     />
                   ) : field.type === 'select' ? (
                     <select
+                      data-ai-field={field.key}
                       className="form-select"
                       value={formData[field.key] || ''}
                       onChange={(e) => setFormData({ ...formData, [field.key]: e.target.value })}
@@ -690,6 +694,8 @@ export default function FeaturePage({ feature }) {
                     </select>
                   ) : (
                     <input
+                      data-ai-field={field.key}
+                      data-ai-reference-options={field.key === 'defendant_id' ? JSON.stringify(defendantReferenceIds) : undefined}
                       type={field.type}
                       className="form-input"
                       value={formData[field.key] || ''}
@@ -724,6 +730,11 @@ export default function FeaturePage({ feature }) {
         {aiResult && <AIResultDisplay result={aiResult} />}
       </div>
     );
+    return config.aiEndpoint ? (
+      <NativeAIControls busy={aiLoading} context={`${feature.label} AI analysis`}>
+        {formView}
+      </NativeAIControls>
+    ) : formView;
   }
 
   // List View
